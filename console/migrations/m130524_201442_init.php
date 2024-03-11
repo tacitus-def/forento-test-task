@@ -6,24 +6,21 @@ class m130524_201442_init extends Migration
 {
     public function up()
     {
-        $tableOptions = null;
-        if ($this->db->driverName === 'mysql') {
-            // https://stackoverflow.com/questions/766809/whats-the-difference-between-utf8-general-ci-and-utf8-unicode-ci
-            $tableOptions = 'CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE=InnoDB';
-        }
-
         $this->createTable('{{%user}}', [
             'id' => $this->primaryKey(),
-            'username' => $this->string()->notNull()->unique(),
-            'auth_key' => $this->string(32)->notNull(),
-            'password_hash' => $this->string()->notNull(),
             'password_reset_token' => $this->string()->unique(),
-            'email' => $this->string()->notNull()->unique(),
-
-            'status' => $this->smallInteger()->notNull()->defaultValue(10),
+            'email' => $this->string(50)->notNull()->unique(),
+            'password_hash' => $this->string()->notNull(),
+            'status_id' => $this->integer()->notNull()->defaultValue(0),
+            'name' => $this->string(500)->notNull(),
+            'sex' => $this->boolean()->notNull(),
             'created_at' => $this->integer()->notNull(),
             'updated_at' => $this->integer()->notNull(),
-        ], $tableOptions);
+            'deleted' => $this->boolean()->notNull()->defaultValue(1),
+            'auth_key' => $this->string(32)->notNull(),
+        ], 'CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci ENGINE=InnoDB');
+
+        $this->createIndex('idx_userDeleted', '{{%user}}', ['deleted']);
     }
 
     public function down()

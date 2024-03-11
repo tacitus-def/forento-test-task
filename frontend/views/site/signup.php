@@ -4,6 +4,7 @@
 /** @var yii\bootstrap5\ActiveForm $form */
 /** @var \frontend\models\SignupForm $model */
 
+use common\models\User;
 use yii\bootstrap5\Html;
 use yii\bootstrap5\ActiveForm;
 
@@ -19,7 +20,9 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="col-lg-5">
             <?php $form = ActiveForm::begin(['id' => 'form-signup']); ?>
 
-                <?= $form->field($model, 'username')->textInput(['autofocus' => true]) ?>
+                <?= $form->field($model, 'name') ?>
+
+                <?= $form->field($model, 'sex')->dropDownList([User::SEX_FEMALE => 'Female', User::SEX_MALE => 'Male'], ['prompt' => '— Select —']) ?>
 
                 <?= $form->field($model, 'email') ?>
 
