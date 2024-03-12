@@ -3,6 +3,7 @@
 namespace common\models;
 
 use Yii;
+use common\models\Client;
 use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
@@ -23,6 +24,7 @@ use yii\web\IdentityInterface;
  * @property integer $status_id
  * @property integer $created_at
  * @property string $password write-only password
+ * @property Client[] $clients
  */
 class User extends ActiveRecord implements IdentityInterface
 {
@@ -62,6 +64,11 @@ class User extends ActiveRecord implements IdentityInterface
             ['deleted', 'default', 'value' => self::NOT_DELETED],
             ['deleted', 'in', 'range' => [self::NOT_DELETED, self::DELETED]],
         ];
+    }
+
+    public function getClients() {
+        return $this->hasMany(Client::class, ['id' => 'client_id'])
+                    ->viaTable('{{%user_client}}', ['user_id' => 'id']);
     }
 
     /**

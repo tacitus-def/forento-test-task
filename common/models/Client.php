@@ -3,6 +3,7 @@
 namespace common\models;
 
 use Yii;
+use common\models\User;
 use yii\behaviors\TimestampBehavior;
 
 /**
@@ -19,6 +20,7 @@ use yii\behaviors\TimestampBehavior;
  * @property int $updated_at
  * @property int $status
  * @property int $deleted
+ * @property User[] $users
  */
 class Client extends \yii\db\ActiveRecord
 {
@@ -46,6 +48,11 @@ class Client extends \yii\db\ActiveRecord
         return [
             TimestampBehavior::class,
         ];
+    }
+
+    public function getUsers() {
+        return $this->hasMany(User::class, ['id' => 'user_id'])
+                    ->viaTable('{{%user_client}}', ['client_id' => 'id']);
     }
 
     /**
