@@ -2,13 +2,17 @@
 
 namespace backend\controllers;
 
+use Yii;
 use common\models\User;
+use common\models\Client;
 use backend\models\UserForm;
 use backend\models\UserSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
+use yii\data\ActiveDataProvider;
+use yii\base\DynamicModel;
 
 /**
  * UserController implements the CRUD actions for User model.
@@ -42,6 +46,49 @@ class UserController extends Controller
         );
     }
 
+public function actionAddClient($id)
+    {
+        $model = $this->findModel($id);
+        $name = Yii::$app->request->post('name');
+        $validation = DynamicModel::validateData(['name' => $name], [
+            ['name', 'required'],
+        ]);
+
+        if ($validation->hasErrors()) {
+
+        }
+        else {
+            $client = Client::find()->where(['name' => $name])->one();
+            if ($client) {
+                $model->link('clients', $client);
+            }
+        }
+
+        return $this->redirect(['user/view', 'id' => $id]);
+    }
+
+    public function actionDeleteClient($id)
+    {
+        $model = $this->findModel($id);
+        $client_id = Yii::$app->request->get('client');
+        $validation = DynamicModel::validateData(['client' => $client_id], [
+            ['client', 'required'],
+            ['client', 'integer'],
+        ]);
+
+        if ($validation->hasErrors()) {
+
+        }
+        else {
+            $client = Client::findOne($client_id);
+            if ($client) {
+                $model->unlink('clients', $client, true);
+            }
+        }
+
+        return $this->redirect(['user/view', 'id' => $id]);
+    }
+
     /**
      * Lists all User models.
      *
@@ -66,8 +113,16 @@ class UserController extends Controller
      */
     public function actionView($id)
     {
+        $model = $this->findModel($id);
+        $clientProvider = new ActiveDataProvider([
+            'query' => $model->getClients(),
+            'pagination' => [
+                'pageSize' => 20,
+            ]
+        ]);
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model' => $model,
+            'clientProvider' => $clientProvider
         ]);
     }
 
