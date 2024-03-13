@@ -3,7 +3,7 @@
 namespace backend\controllers;
 
 use Yii;
-use common\models\User;
+use common\models\Person;
 use common\models\Client;
 use backend\models\ClientForm;
 use backend\models\ClientSearch;
@@ -121,7 +121,7 @@ class ClientController extends Controller
 
         }
         else {
-            $user = User::find()->where(['email' => $email])->one();
+            $user = Person::find()->where(['email' => $email])->one();
             if ($user) {
                 $model->link('users', $user);
             }
@@ -143,7 +143,7 @@ class ClientController extends Controller
 
         }
         else {
-            $user = User::findOne($user_id);
+            $user = Person::findOne($user_id);
             if ($user) {
                 $model->unlink('users', $user, true);
             }

@@ -7,7 +7,7 @@ use yii\grid\GridView;
 use yii\grid\ActionColumn;
 
 /** @var yii\web\View $this */
-/** @var common\models\User $model */
+/** @var common\models\Person $model */
 
 $this->title = $model->name;
 $this->params['breadcrumbs'][] = ['label' => 'Users', 'url' => ['index']];

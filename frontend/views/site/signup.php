@@ -4,7 +4,7 @@
 /** @var yii\bootstrap5\ActiveForm $form */
 /** @var \frontend\models\SignupForm $model */
 
-use common\models\User;
+use common\models\Person;
 use yii\bootstrap5\Html;
 use yii\bootstrap5\ActiveForm;
 
@@ -22,7 +22,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                 <?= $form->field($model, 'name') ?>
 
-                <?= $form->field($model, 'sex')->dropDownList([User::SEX_FEMALE => 'Female', User::SEX_MALE => 'Male'], ['prompt' => '— Select —']) ?>
+                <?= $form->field($model, 'sex')->dropDownList([Person::SEX_FEMALE => 'Female', Person::SEX_MALE => 'Male'], ['prompt' => '— Select —']) ?>
 
                 <?= $form->field($model, 'email') ?>
 

@@ -3,7 +3,7 @@
 namespace backend\controllers;
 
 use Yii;
-use common\models\User;
+use common\models\Person;
 use common\models\Client;
 use backend\models\UserForm;
 use backend\models\UserSearch;
@@ -133,7 +133,7 @@ public function actionAddClient($id)
      */
     public function actionCreate()
     {
-        $model = new User();
+        $model = new Person();
         $form = new UserForm(['model' => $model]);
 
         if ($this->request->isPost) {
@@ -178,7 +178,7 @@ public function actionAddClient($id)
     public function actionDelete($id)
     {
         $model = $this->findModel($id);
-        $model->setAttribute('deleted', User::DELETED);
+        $model->setAttribute('deleted', Person::DELETED);
         $model->save();
 
         return $this->redirect(['index']);
@@ -188,12 +188,12 @@ public function actionAddClient($id)
      * Finds the User model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param int $id
-     * @return User the loaded model
+     * @return Person the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = User::findOne(['id' => $id])) !== null) {
+        if (($model = Person::findOne(['id' => $id])) !== null) {
             return $model;
         }
 

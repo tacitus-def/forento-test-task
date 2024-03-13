@@ -4,7 +4,7 @@ namespace frontend\models;
 
 use Yii;
 use yii\base\Model;
-use common\models\User;
+use common\models\Person;
 
 /**
  * Signup form
@@ -24,7 +24,7 @@ class SignupForm extends Model
     {
         return [
             ['sex', 'required'],
-            ['sex', 'in', 'range' => [User::SEX_FEMALE, User::SEX_MALE]],
+            ['sex', 'in', 'range' => [Person::SEX_FEMALE, Person::SEX_MALE]],
 
             ['name', 'required'],
 
@@ -50,11 +50,11 @@ class SignupForm extends Model
             return null;
         }
 
-        $user = new User();
+        $user = new Person();
         $user->name = $this->name;
         $user->sex = $this->sex;
-        $user->deleted = User::NOT_DELETED;
-        $user->status_id = User::STATUS_INACTIVE;
+        $user->deleted = Person::NOT_DELETED;
+        $user->status_id = Person::STATUS_INACTIVE;
         $user->email = $this->email;
         $user->setPassword($this->password);
         $user->generateAuthKey();
@@ -65,7 +65,7 @@ class SignupForm extends Model
 
     /**
      * Sends confirmation email to user
-     * @param User $user user model to with email should be send
+     * @param Person $user user model to with email should be send
      * @return bool whether the email was sent
      */
     protected function sendEmail($user)

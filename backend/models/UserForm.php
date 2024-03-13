@@ -4,7 +4,7 @@ namespace backend\models;
 
 use Yii;
 use yii\base\Model;
-use common\models\User;
+use common\models\Person;
 
 /**
  * Description of UserForm
@@ -12,7 +12,7 @@ use common\models\User;
  * @author demiurg
  */
 class UserForm extends Model {
-    /** @var User */
+    /** @var Person */
     protected $_model;
     public $name;
     public $email;
@@ -20,7 +20,7 @@ class UserForm extends Model {
     public $status;
     public $password;
 
-    public function sameEmail(User $model) {
+    public function sameEmail($model) {
         return ($model->email != $this->_model->email);
     }
 
@@ -31,11 +31,11 @@ class UserForm extends Model {
     {
         return [
             [['model'], 'required'],
-            [['model'], fn($attr) => $this->$attr instanceof User],
+            [['model'], fn($attr) => $this->$attr instanceof Person],
             ['sex', 'required'],
-            ['sex', 'in', 'range' => [User::SEX_FEMALE, User::SEX_MALE]],
+            ['sex', 'in', 'range' => [Person::SEX_FEMALE, Person::SEX_MALE]],
             ['status', 'required'],
-            ['status', 'in', 'range' => [User::STATUS_INACTIVE, User::STATUS_ACTIVE]],
+            ['status', 'in', 'range' => [Person::STATUS_INACTIVE, Person::STATUS_ACTIVE]],
 
             ['name', 'required'],
 
@@ -63,7 +63,7 @@ class UserForm extends Model {
         return $this->_model;
     }
 
-    public function setModel(User $model)
+    public function setModel(Person $model)
     {
         $this->name = $model->name;
         $this->sex = $model->sex;
@@ -96,7 +96,7 @@ class UserForm extends Model {
         }
 
         if ($user->isNewRecord) {
-            $user->deleted = User::NOT_DELETED;
+            $user->deleted = Person::NOT_DELETED;
         }
 
         return $user->save();
