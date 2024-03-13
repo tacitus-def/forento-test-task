@@ -48,6 +48,12 @@ class Person extends User implements IdentityInterface {
         }
         return parent::beforeSave($insert);
     }
+
+    public function getGroups() {
+        return $this->hasMany(Group::class, ['id' => 'group_id'])
+                    ->viaTable('{{%group_person}}', ['person_id' => 'id']);
+    }
+
     /**
      * Finds user by email
      *

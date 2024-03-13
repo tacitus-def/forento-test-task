@@ -16,6 +16,10 @@ namespace common\models;
  */
 class Group extends User {
 
+    public function getPersons() {
+        return $this->hasMany(Person::class, ['id' => 'person_id'])
+                    ->viaTable('{{%group_person}}', ['group_id' => 'id']);
+    }
     /**
      * {@inheritdoc}
      */
