@@ -2,6 +2,8 @@
 
 namespace backend\controllers;
 
+use Yii;
+use common\models\User;
 use common\models\Client;
 use backend\models\ClientForm;
 use backend\models\ClientSearch;
@@ -9,6 +11,8 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
+use yii\data\ActiveDataProvider;
+use yii\base\DynamicModel;
 
 /**
  * ClientController implements the CRUD actions for Client model.
@@ -27,6 +31,8 @@ class ClientController extends Controller
                     'class' => VerbFilter::className(),
                     'actions' => [
                         'delete' => ['POST'],
+                        'add-user' => ['POST'],
+                        'delete-user' => ['POST'],
                     ],
                 ],
                 'access' => [
@@ -67,8 +73,15 @@ class ClientController extends Controller
     public function actionView($id)
     {
         $model = $this->findModel($id);
+        $userProvider = new ActiveDataProvider([
+            'query' => $model->getUsers(),
+            'pagination' => [
+                'pageSize' => 20,
+            ]
+        ]);
         return $this->render('view', [
             'model' => $model,
+            'userProvider' => $userProvider,
         ]);
     }
 
@@ -93,6 +106,50 @@ class ClientController extends Controller
         return $this->render('create', [
             'form' => $form,
         ]);
+    }
+
+    public function actionAddUser($id)
+    {
+        $model = $this->findModel($id);
+        $email = Yii::$app->request->post('email');
+        $validation = DynamicModel::validateData(['email' => $email], [
+            ['email', 'required'],
+            ['email', 'email'],
+        ]);
+
+        if ($validation->hasErrors()) {
+
+        }
+        else {
+            $user = User::find()->where(['email' => $email])->one();
+            if ($user) {
+                $model->link('users', $user);
+            }
+        }
+
+        return $this->redirect(['client/view', 'id' => $id]);
+    }
+
+    public function actionDeleteUser($id)
+    {
+        $model = $this->findModel($id);
+        $user_id = Yii::$app->request->get('user');
+        $validation = DynamicModel::validateData(['user' => $user_id], [
+            ['user', 'required'],
+            ['user', 'integer'],
+        ]);
+
+        if ($validation->hasErrors()) {
+
+        }
+        else {
+            $user = User::findOne($user_id);
+            if ($user) {
+                $model->unlink('users', $user, true);
+            }
+        }
+
+        return $this->redirect(['client/view', 'id' => $id]);
     }
 
     /**

@@ -2,6 +2,9 @@
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
+use yii\grid\GridView;
+use yii\helpers\Url;
+use yii\grid\ActionColumn;
 
 /** @var yii\web\View $this */
 /** @var common\models\Client $model */
@@ -35,6 +38,33 @@ $this->params['breadcrumbs'][] = $this->title;
             'balance',
             'status',
         ],
+    ]) ?>
+
+    <h3>Users</h3>
+    <?= Html::beginForm(Url::to(['client/add-user', 'id' => $model->id]), 'POST', ['class' => 'row g-3']) ?>
+    <div class="col-auto">
+        <label class="col-form-label">Email</label>
+    </div>
+    <div class="col-auto">
+    <?= Html::textInput('email', '', ['class' =>'form-control']) ?>
+    </div>
+    <div class="col-auto">
+    <?= Html::submitButton('Add', ['class' =>'btn btn-primary']) ?>
+    </div>
+    <?= Html::endForm() ?>
+    <?= GridView::widget([
+        'dataProvider' => $userProvider,
+        'columns' => [
+            'name',
+            'email',
+            [
+                'class' => ActionColumn::class,
+                'template' => '{delete}',
+                'urlCreator' => function ($action, $user) use ($model) {
+                    return Url::to(["client/" . $action . "-user", 'id' => $model->id, 'user' => $user->id]);
+                }
+            ]
+        ]
     ]) ?>
 
 </div>
