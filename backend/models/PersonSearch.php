@@ -9,7 +9,7 @@ use common\models\Person;
 /**
  * UserSearch represents the model behind the search form of `common\models\User`.
  */
-class UserSearch extends Person
+class PersonSearch extends Person
 {
     /**
      * {@inheritdoc}

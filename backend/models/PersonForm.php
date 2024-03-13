@@ -11,7 +11,7 @@ use common\models\Person;
  *
  * @author demiurg
  */
-class UserForm extends Model {
+class PersonForm extends Model {
     /** @var Person */
     protected $_model;
     public $name;

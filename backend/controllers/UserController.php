@@ -5,8 +5,8 @@ namespace backend\controllers;
 use Yii;
 use common\models\Person;
 use common\models\Client;
-use backend\models\UserForm;
-use backend\models\UserSearch;
+use backend\models\PersonForm;
+use backend\models\PersonSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -96,7 +96,7 @@ public function actionAddClient($id)
      */
     public function actionIndex()
     {
-        $searchModel = new UserSearch();
+        $searchModel = new PersonSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
         return $this->render('index', [
@@ -134,7 +134,7 @@ public function actionAddClient($id)
     public function actionCreate()
     {
         $model = new Person();
-        $form = new UserForm(['model' => $model]);
+        $form = new PersonForm(['model' => $model]);
 
         if ($this->request->isPost) {
             if ($form->load($this->request->post()) && $form->save()) {
@@ -157,7 +157,7 @@ public function actionAddClient($id)
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-        $form = new UserForm(['model' => $model]);
+        $form = new PersonForm(['model' => $model]);
 
         if ($this->request->isPost && $form->load($this->request->post()) && $form->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
