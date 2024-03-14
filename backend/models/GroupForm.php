@@ -17,6 +17,10 @@ class GroupForm extends Model {
     public $name;
     public $status;
 
+    public function sameName($model) {
+        return ($model->name != $this->_model->name);
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -29,6 +33,13 @@ class GroupForm extends Model {
             ['status', 'in', 'range' => [Group::STATUS_INACTIVE, Group::STATUS_ACTIVE]],
 
             ['name', 'required'],
+            ['name', 'trim'],
+            ['name', 'string', 'max' => 255],
+            ['name', 'unique',
+                'targetClass' => '\common\models\User',
+                'message' => 'This name has already been taken.',
+                'when' => [$this, 'sameName']
+                    ],
         ];
     }
 
