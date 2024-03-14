@@ -13,6 +13,7 @@ namespace common\models;
  * @property integer $updated_at
  * @property Client[] $clients
  * @property Person[] $persons
+ * @property string $password write-only password
  */
 class Group extends User {
 
@@ -25,12 +26,13 @@ class Group extends User {
      */
     public static function findIdentity($id)
     {
-        return static::findOne([
+        $condition = [
             'id' => $id,
             'deleted' => self::NOT_DELETED,
             'status_id' => self::STATUS_ACTIVE,
-            'type_is' => self::TYPE_GROUP
-                ]);
+            'type_is' => self::TYPE_GROUP,
+                ];
+        return static::findOne($condition);
     }
 
     public function beforeSave($insert) {

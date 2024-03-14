@@ -13,6 +13,8 @@ use yii\widgets\ActiveForm;
     <?php $form = ActiveForm::begin(); ?>
 
     <?= $form->field($model, 'name')->textInput() ?>
+    <?= $form->field($model, 'email')->textInput() ?>
+    <?= $form->field($model, 'password')->passwordInput() ?>
 
     <?= $form->field($model, 'status')->dropDownList([0 => 'Inactive', 1 => 'Active'], ['prompt' => '— Select —']) ?>
 

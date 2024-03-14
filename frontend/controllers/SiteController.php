@@ -18,6 +18,7 @@ use frontend\models\ContactForm;
 use yii\helpers\ArrayHelper;
 use yii\base\DynamicModel;
 use common\models\Group;
+use common\models\User;
 
 /**
  * Site controller
@@ -106,9 +107,12 @@ class SiteController extends Controller
 
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            $user = $model->getUser();
-            $groups = ArrayHelper::map($user->groups, 'id', 'name');
             Yii::$app->session['user-group'] = null;
+            $user = $model->getUser();
+            if ($user->type_is == User::TYPE_GROUP) {
+                return $this->goBack();
+            }
+            $groups = ArrayHelper::map($user->groups, 'id', 'name');
             if (count($groups) > 0) {
                 return $this->render('login-group', [
                     'model' => $user,

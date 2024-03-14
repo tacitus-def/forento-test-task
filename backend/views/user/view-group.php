@@ -5,7 +5,6 @@ use yii\widgets\DetailView;
 use yii\helpers\Url;
 use yii\grid\GridView;
 use yii\grid\ActionColumn;
-use common\models\User;
 
 /** @var yii\web\View $this */
 /** @var common\models\Person $model */
@@ -35,6 +34,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
                     'name',
+                    'email',
                     'status_id',
                 ],
     ]) ?>

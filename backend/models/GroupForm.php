@@ -16,9 +16,11 @@ class GroupForm extends Model {
     protected $_model;
     public $name;
     public $status;
+    public $email;
+    public $password;
 
-    public function sameName($model) {
-        return ($model->name != $this->_model->name);
+    public function sameEmail($model) {
+        return ($model->email != $this->_model->email);
     }
 
     /**
@@ -33,13 +35,24 @@ class GroupForm extends Model {
             ['status', 'in', 'range' => [Group::STATUS_INACTIVE, Group::STATUS_ACTIVE]],
 
             ['name', 'required'],
-            ['name', 'trim'],
-            ['name', 'string', 'max' => 255],
-            ['name', 'unique',
+
+            ['email', 'trim'],
+            ['email', 'required'],
+            ['email', 'email'],
+            ['email', 'string', 'max' => 255],
+            ['email', 'unique',
                 'targetClass' => '\common\models\User',
-                'message' => 'This name has already been taken.',
-                'when' => [$this, 'sameName']
+                'message' => 'This email address has already been taken.',
+                'when' => [$this, 'sameEmail']
                     ],
+
+            ['password', 'required', 
+                'when' => fn($form) => $form->model->isNewRecord,
+                'whenClient' => 'function (attr, value) { '
+                    .'return '.($this->model->isNewRecord ? 'true' : 'false').';'
+                    .' }',
+                        ],
+            ['password', 'string', 'min' => Yii::$app->params['user.passwordMinLength']],
         ];
     }
 
@@ -50,6 +63,7 @@ class GroupForm extends Model {
     public function setModel(Group $model)
     {
         $this->name = $model->name;
+        $this->email = $model->email;
         $this->status = $model->status_id;
 
         $this->_model = $model;
@@ -68,8 +82,13 @@ class GroupForm extends Model {
 
         $group = $this->model;
         $group->name = $this->name;
+        $group->email = $this->email;
         $group->status_id = $this->status;
 
+        if ($this->password) {
+            $group->setPassword($this->password);
+            $group->generateAuthKey();
+        }
         if ($group->isNewRecord) {
             $group->deleted = Group::NOT_DELETED;
         }
