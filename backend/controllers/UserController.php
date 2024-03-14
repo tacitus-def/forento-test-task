@@ -3,10 +3,13 @@
 namespace backend\controllers;
 
 use Yii;
+use common\models\User;
+use common\models\Group;
 use common\models\Person;
 use common\models\Client;
+use backend\models\GroupForm;
 use backend\models\PersonForm;
-use backend\models\PersonSearch;
+use backend\models\UserSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -38,7 +41,7 @@ class UserController extends Controller
                     'rules' => [
                         [
                             'allow' => true,
-                            'roles' => ['@'],
+                            'roles' => ['admin'],
                         ],
                     ],
                 ],
@@ -48,7 +51,7 @@ class UserController extends Controller
 
 public function actionAddClient($id)
     {
-        $model = $this->findModel($id);
+        $model = $this->findUser($id);
         $name = Yii::$app->request->post('name');
         $validation = DynamicModel::validateData(['name' => $name], [
             ['name', 'required'],
@@ -69,7 +72,7 @@ public function actionAddClient($id)
 
     public function actionDeleteClient($id)
     {
-        $model = $this->findModel($id);
+        $model = $this->findUser($id);
         $client_id = Yii::$app->request->get('client');
         $validation = DynamicModel::validateData(['client' => $client_id], [
             ['client', 'required'],
@@ -89,6 +92,51 @@ public function actionAddClient($id)
         return $this->redirect(['user/view', 'id' => $id]);
     }
 
+
+public function actionAddMember($id)
+    {
+        $model = $this->findGroup($id);
+        $email = Yii::$app->request->post('email');
+        $validation = DynamicModel::validateData(['email' => $email], [
+            ['email', 'required'],
+            ['email', 'email'],
+        ]);
+
+        if ($validation->hasErrors()) {
+
+        }
+        else {
+            $member = Person::find()->where(['email' => $email])->one();
+            if ($member) {
+                $model->link('persons', $member);
+            }
+        }
+
+        return $this->redirect(['user/view', 'id' => $id]);
+    }
+
+    public function actionDeleteMember($id)
+    {
+        $model = $this->findGroup($id);
+        $member_id = Yii::$app->request->get('member');
+        $validation = DynamicModel::validateData(['member' => $member_id], [
+            ['member', 'required'],
+            ['member', 'integer'],
+        ]);
+
+        if ($validation->hasErrors()) {
+
+        }
+        else {
+            $member = Person::findOne($member_id);
+            if ($member) {
+                $model->unlink('persons', $member, true);
+            }
+        }
+
+        return $this->redirect(['user/view', 'id' => $id]);
+    }
+
     /**
      * Lists all User models.
      *
@@ -96,7 +144,7 @@ public function actionAddClient($id)
      */
     public function actionIndex()
     {
-        $searchModel = new PersonSearch();
+        $searchModel = new UserSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
         return $this->render('index', [
@@ -113,17 +161,47 @@ public function actionAddClient($id)
      */
     public function actionView($id)
     {
-        $model = $this->findModel($id);
+        $model = $this->findUser($id);
         $clientProvider = new ActiveDataProvider([
             'query' => $model->getClients(),
             'pagination' => [
                 'pageSize' => 20,
             ]
         ]);
-        return $this->render('view', [
-            'model' => $model,
-            'clientProvider' => $clientProvider
-        ]);
+
+        switch ($model->type_is) {
+            case User::TYPE_GROUP:
+                $group = new Group();
+                Group::populateRecord($group, $model->getAttributes());
+                $memberProvider = new ActiveDataProvider([
+                    'query' => $group->getPersons(),
+                    'pagination' => [
+                        'pageSize' => 20,
+                    ]
+                ]);
+                return $this->render("view-group", [
+                    'model' => $group,
+                    'memberProvider' => $memberProvider,
+                    'clientProvider' => $clientProvider
+                ]);
+                break;
+            case User::TYPE_PERSON:
+                $user = new Person();
+                Person::populateRecord($user, $model->getAttributes());
+                $groupProvider = new ActiveDataProvider([
+                    'query' => $user->getGroups(),
+                    'pagination' => [
+                        'pageSize' => 20,
+                    ]
+                ]);
+                return $this->render("view-user", [
+                    'model' => $user,
+                    'groupProvider' => $groupProvider,
+                    'clientProvider' => $clientProvider
+                ]);
+                break;
+        }
+        throw new \yii\web\HttpException(500);
     }
 
     /**
@@ -131,7 +209,7 @@ public function actionAddClient($id)
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return string|\yii\web\Response
      */
-    public function actionCreate()
+    public function actionCreateUser()
     {
         $model = new Person();
         $form = new PersonForm(['model' => $model]);
@@ -142,7 +220,23 @@ public function actionAddClient($id)
             }
         }
 
-        return $this->render('create', [
+        return $this->render('create-user', [
+            'form' => $form,
+        ]);
+    }
+
+    public function actionCreateGroup()
+    {
+        $model = new Group();
+        $form = new GroupForm(['model' => $model]);
+
+        if ($this->request->isPost) {
+            if ($form->load($this->request->post()) && $form->save()) {
+                return $this->redirect(['view', 'id' => $model->id]);
+            }
+        }
+
+        return $this->render('create-group', [
             'form' => $form,
         ]);
     }
@@ -154,16 +248,30 @@ public function actionAddClient($id)
      * @return string|\yii\web\Response
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionUpdate($id)
+    public function actionUpdateUser($id)
     {
-        $model = $this->findModel($id);
+        $model = $this->findPerson($id);
         $form = new PersonForm(['model' => $model]);
 
         if ($this->request->isPost && $form->load($this->request->post()) && $form->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
-        return $this->render('update', [
+        return $this->render('update-user', [
+            'form' => $form,
+        ]);
+    }
+
+    public function actionUpdateGroup($id)
+    {
+        $model = $this->findGroup($id);
+        $form = new GroupForm(['model' => $model]);
+
+        if ($this->request->isPost && $form->load($this->request->post()) && $form->save()) {
+            return $this->redirect(['view', 'id' => $model->id]);
+        }
+
+        return $this->render('update-group', [
             'form' => $form,
         ]);
     }
@@ -177,8 +285,8 @@ public function actionAddClient($id)
      */
     public function actionDelete($id)
     {
-        $model = $this->findModel($id);
-        $model->setAttribute('deleted', Person::DELETED);
+        $model = $this->findUser($id);
+        $model->setAttribute('deleted', User::DELETED);
         $model->save();
 
         return $this->redirect(['index']);
@@ -191,9 +299,27 @@ public function actionAddClient($id)
      * @return Person the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModel($id)
+    protected function findUser($id)
+    {
+        if (($model = User::findOne(['id' => $id])) !== null) {
+            return $model;
+        }
+
+        throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    protected function findPerson($id)
     {
         if (($model = Person::findOne(['id' => $id])) !== null) {
+            return $model;
+        }
+
+        throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    protected function findGroup($id)
+    {
+        if (($model = Group::findOne(['id' => $id])) !== null) {
             return $model;
         }
 

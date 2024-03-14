@@ -5,6 +5,7 @@ use yii\widgets\DetailView;
 use yii\helpers\Url;
 use yii\grid\GridView;
 use yii\grid\ActionColumn;
+use common\models\User;
 
 /** @var yii\web\View $this */
 /** @var common\models\Person $model */
@@ -13,13 +14,14 @@ $this->title = $model->name;
 $this->params['breadcrumbs'][] = ['label' => 'Users', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
+
 ?>
 <div class="user-view">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Update', ["update-user", 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
         <?= Html::a('Delete', ['delete', 'id' => $model->id], [
             'class' => 'btn btn-danger',
             'data' => [
@@ -32,11 +34,19 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
+                    'name',
+                    'sex',
+                    'email:email',
+                    'status_id',
+                ],
+    ]) ?>
+
+    <h3>Groups</h3>
+    <?= GridView::widget([
+        'dataProvider' => $groupProvider,
+        'columns' => [
             'name',
-            'sex',
-            'email:email',
-            'status_id',
-        ],
+        ]
     ]) ?>
 
     <h3>Clients</h3>

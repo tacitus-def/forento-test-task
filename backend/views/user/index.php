@@ -1,6 +1,6 @@
 <?php
 
-use common\models\Person;
+use common\models\User;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
@@ -18,7 +18,15 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Create User', ['create'], ['class' => 'btn btn-success']) ?>
+        <div class="btn-group" role="group">
+            <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                Create
+            </button>
+            <ul class="dropdown-menu">
+                <li><?= Html::a('Create User', ['create-user'], ['class' => 'dropdown-item']) ?></li>
+                <li><?= Html::a('Create Group', ['create-group'], ['class' => 'dropdown-item']) ?></li>
+            </ul>
+        </div>
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
@@ -30,13 +38,28 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
 
             'name',
+            'type_is',
             'sex',
             'email:email',
             'status_id',
             [
                 'class' => ActionColumn::className(),
-                'urlCreator' => function ($action, Person $model, $key, $index, $column) {
-                    return Url::toRoute([$action, 'id' => $model->id]);
+                'urlCreator' => function ($action, User $model, $key, $index, $column) {
+                    if ($action == 'update') {
+                        $type = '';
+                        switch ($model->type_is) {
+                            case User::TYPE_GROUP:
+                                $type = 'group';
+                                break;
+                            case User::TYPE_PERSON:
+                                $type = 'user';
+                                break;
+                        }
+                        return Url::toRoute(["{$action}-{$type}", 'id' => $model->id]);
+                    }
+                    else {
+                        return Url::toRoute([$action, 'id' => $model->id]);
+                     }
                  }
             ],
         ],
