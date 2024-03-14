@@ -1,60 +1,72 @@
-<p align="center">
-    <a href="https://github.com/yiisoft" target="_blank">
-        <img src="https://avatars0.githubusercontent.com/u/993323" height="100px">
-    </a>
-    <h1 align="center">Yii 2 Advanced Project Template</h1>
-    <br>
-</p>
+# Тестовое задание от forento.ru
 
-Yii 2 Advanced Project Template is a skeleton [Yii 2](https://www.yiiframework.com/) application best for
-developing complex Web applications with multiple tiers.
+### Условие задания
 
-The template includes three tiers: front end, back end, and console, each of which
-is a separate Yii application.
-
-The template is designed to work in a team development environment. It supports
-deploying the application in different environments.
-
-Documentation is at [docs/guide/README.md](docs/guide/README.md).
-
-[![Latest Stable Version](https://img.shields.io/packagist/v/yiisoft/yii2-app-advanced.svg)](https://packagist.org/packages/yiisoft/yii2-app-advanced)
-[![Total Downloads](https://img.shields.io/packagist/dt/yiisoft/yii2-app-advanced.svg)](https://packagist.org/packages/yiisoft/yii2-app-advanced)
-[![build](https://github.com/yiisoft/yii2-app-advanced/workflows/build/badge.svg)](https://github.com/yiisoft/yii2-app-advanced/actions?query=workflow%3Abuild)
-
-DIRECTORY STRUCTURE
--------------------
-
+Имеется таблица пользователей – `users`, в которой хранится базовая информация о пользователях
+всей системы
 ```
-common
-    config/              contains shared configurations
-    mail/                contains view files for e-mails
-    models/              contains model classes used in both backend and frontend
-    tests/               contains tests for common classes    
-console
-    config/              contains console configurations
-    controllers/         contains console controllers (commands)
-    migrations/          contains database migrations
-    models/              contains console-specific model classes
-    runtime/             contains files generated during runtime
-backend
-    assets/              contains application assets such as JavaScript and CSS
-    config/              contains backend configurations
-    controllers/         contains Web controller classes
-    models/              contains backend-specific model classes
-    runtime/             contains files generated during runtime
-    tests/               contains tests for backend application    
-    views/               contains view files for the Web application
-    web/                 contains the entry script and Web resources
-frontend
-    assets/              contains application assets such as JavaScript and CSS
-    config/              contains frontend configurations
-    controllers/         contains Web controller classes
-    models/              contains frontend-specific model classes
-    runtime/             contains files generated during runtime
-    tests/               contains tests for frontend application
-    views/               contains view files for the Web application
-    web/                 contains the entry script and Web resources
-    widgets/             contains frontend widgets
-vendor/                  contains dependent 3rd-party packages
-environments/            contains environment-based overrides
+CREATE TABLE "users" (
+    "id" serial PRIMARY KEY,
+    "email" varchar(50) COLLATE "default" NOT NULL,
+    "password" varchar(64) COLLATE "default" NOT NULL,
+    "status_id" int4 DEFAULT 1 NOT NULL,
+    "name" varchar(500) COLLATE "default" NOT NULL,
+    "sex" bool,
+    "created_at" timestamp(0) DEFAULT now() NOT NULL,
+    "deleted" bool DEFAULT true NOT NULL,
+    "auth_key" varchar(32) COLLATE "default"
+);
 ```
+Имеется таблица клиентов – `clients`, в которой представлены клиенты системы:
+```
+CREATE TABLE "clients" (
+    "id serial PRIMARY KEY,
+    "name" varchar(255) COLLATE "default" NOT NULL,
+    "description" text COLLATE "default",
+    "account_type" int4 DEFAULT 1 NOT NULL,
+    "balance" float8 DEFAULT 0,
+    "created_by int4,
+    "updated_by" int4,
+    "created_at" int4,
+    "updated_at" int4,
+    "status" int4 DEFAULT 1,
+    "deleted" bool DEFAULT false
+);
+```
+У каждого клиента может быть свой список пользователей, но все они осуществляют процесс
+авторизации на базе полей `email` и `password`.
+Необходимо выполнить указанные модификации помощью стандартных YII-инструментов (там,
+где это требуется).
+
+1. Обеспечить уникальность идентификационных данных внутри системы
+2. Сформировать классы моделей, которые можно было безопасно переформировать на
+любом этапе работы, без потери ранее разработанного функционала модели.
+3. Обеспечить возможность привязки пользователя к клиенту (сформировать миграцию)
+4. Дополнить модель клиентов возможностью редактирования привязки к клиенту
+5. Предусмотреть возможность связи пользователя с несколькими клиентами.
+6. Обеспечить возможность (со стороны модели и базы) заведения групповых
+пользователей, таких как например «Группа разработчиков», «Магазин» и т.д. Без
+изменения алгоритма авторизации (email + password). С возможностью авторизоваться как
+член группы разработчиков или сотрудник магазина под индивидуальными данными для
+авторизации.
+7. Обеспечить возможность идентификации групповых и индивидуальных пользователей в
+общем списке
+
+Пункты, требующие простых действий можно описать в общем файле. Пункты с миграциями,
+обновленными классами и пр., оптимальнее всего распределять по папкам с соответствующими
+названиями, чтоб можно было проследить изменение модели и структуры БД.
+
+### Развертывание сайта
+
+1. Установить все зависимости
+```composer install```
+2. Выполнить инициализацию окружения
+```php yii init```
+3. Выполнить предварительную миграцию
+```php yii migrate/up 2```
+4. Выполнить миграцию RBAC
+```php yii migrate/up --migrationPath=@yii/rbac/migrations```
+5. Выполнить оставшиеся миграции
+```php yii migrate/up```
+6. Настроить хостинг для административной (backend) и публичной (frontend) частей
+7. Имя и пароль администратора: `admin@it-crowd.com/administrator`
