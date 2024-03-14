@@ -61,7 +61,7 @@ CREATE TABLE "clients" (
 1. Установить все зависимости
 ```composer install```
 2. Выполнить инициализацию окружения
-```php yii init```
+```php init```
 3. Выполнить предварительную миграцию
 ```php yii migrate/up 2```
 4. Выполнить миграцию RBAC
