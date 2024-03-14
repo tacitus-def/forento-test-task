@@ -46,6 +46,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $groupProvider,
         'columns' => [
             'name',
+            'email:email',
         ]
     ]) ?>
 

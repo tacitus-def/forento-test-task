@@ -55,6 +55,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $memberProvider,
         'columns' => [
             'name',
+            'email:email',
             [
                 'class' => ActionColumn::class,
                 'template' => '{delete}',
