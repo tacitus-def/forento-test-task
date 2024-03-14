@@ -15,6 +15,9 @@ use frontend\models\PasswordResetRequestForm;
 use frontend\models\ResetPasswordForm;
 use frontend\models\SignupForm;
 use frontend\models\ContactForm;
+use yii\helpers\ArrayHelper;
+use yii\base\DynamicModel;
+use common\models\Group;
 
 /**
  * Site controller
@@ -37,7 +40,7 @@ class SiteController extends Controller
                         'roles' => ['?'],
                     ],
                     [
-                        'actions' => ['logout'],
+                        'actions' => ['login-group', 'logout'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -46,6 +49,7 @@ class SiteController extends Controller
             'verbs' => [
                 'class' => VerbFilter::class,
                 'actions' => [
+                    'login-group' => ['post'],
                     'logout' => ['post'],
                 ],
             ],
@@ -68,6 +72,17 @@ class SiteController extends Controller
         ];
     }
 
+    public function beforeAction($action) {
+        $group_id = Yii::$app->session['user-group'];
+        $group = Group::findOne($group_id);
+        if ($group) {
+            Yii::$app->view->params['userGroup'] = $group;
+        }
+        else {
+            Yii::$app->view->params['userGroup'] = null;
+        }
+        return parent::beforeAction($action);
+    }
     /**
      * Displays homepage.
      *
@@ -91,7 +106,18 @@ class SiteController extends Controller
 
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->goBack();
+            $user = $model->getUser();
+            $groups = ArrayHelper::map($user->groups, 'id', 'name');
+            Yii::$app->session['user-group'] = null;
+            if (count($groups) > 0) {
+                return $this->render('login-group', [
+                    'model' => $user,
+                    'groups' => $groups,
+                ]);
+            }
+            else {
+                return $this->goBack();
+            }
         }
 
         $model->password = '';
@@ -99,6 +125,26 @@ class SiteController extends Controller
         return $this->render('login', [
             'model' => $model,
         ]);
+    }
+
+    public function actionLoginGroup()
+    {
+        $model = \Yii::$app->user->identity;
+        $groups = ArrayHelper::getColumn($model->groups, 'id');
+        $group_id = Yii::$app->request->post('group');
+        $validation = DynamicModel::validateData(['group' => $group_id], [
+            ['group', 'required'],
+            ['group', 'in', 'range' => $groups]
+        ]);
+
+        if ($validation->hasErrors()) {
+            Yii::$app->session['user-group'] = null;
+            throw new \yii\web\NotFoundHttpException('Unknown Group');
+        }
+        else {
+            Yii::$app->session['user-group'] = $group_id;
+            return $this->goBack();
+        }
     }
 
     /**
