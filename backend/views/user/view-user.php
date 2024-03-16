@@ -33,7 +33,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?= DetailView::widget([
         'model' => $model,
-        'formatter' => ['class' => \backend\components\FormatterUser::class],
+        'formatter' => ['class' => \backend\components\UserFormatter::class],
         'attributes' => [
                     'type_is:type',
                     'name',
