@@ -2,7 +2,6 @@
 
 namespace backend\components;
 
-use common\models\Client;
 use yii\i18n\Formatter;
 
 /**
@@ -10,28 +9,12 @@ use yii\i18n\Formatter;
  *
  * @author demiurg
  */
-class FormatterClient extends Formatter {
-    public function getAccountTypeList()
-    {
-        return [
-            Client::TYPE_PRIVATE => ' Private',
-            Client::TYPE_PUBLIC => 'Public',
-            Client::TYPE_LIMITED => 'Limited',
-                ];
-    }
-
+class ClientFormatter extends Formatter {
     public function asAccountType($value) {
-        return $this->accountTypeList[$value] ?? null;
-    }
-
-    public function getStatusList() {
-        return [
-            Client::STATUS_INACTIVE => 'Inactive',
-            Client::STATUS_ACTIVE => 'Active',
-        ];
+        return ClientMessages::getAccountTypeList()[$value] ?? null;
     }
 
     public function asStatus($value) {
-        return $this->statusList[$value] ?? null;
+        return ClientMessages::getStatusList()[$value] ?? null;
     }
 }
