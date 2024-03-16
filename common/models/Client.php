@@ -40,6 +40,16 @@ class Client extends \yii\db\ActiveRecord
         return '{{%client}}';
     }
 
+    public function attributeLabels() {
+        return [
+            'name' => 'Name',
+            'description' => 'Description',
+            'account_type' => 'Type',
+            'balance' => 'Balance',
+            'status' => 'Status',
+        ];
+    }
+
     /**
      * {@inheritdoc}
      */
