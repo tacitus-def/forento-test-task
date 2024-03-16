@@ -5,7 +5,6 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
 use yii\grid\GridView;
-use yii\bootstrap5\Html as Html5;
 use backend\components\UserLabels;
 
 /** @var yii\web\View $this */
@@ -44,7 +43,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'type_is',
                 'format' => 'type',
-                'filter' => Html5::activeDropDownList(
+                'filter' => Html::activeDropDownList(
                         $searchModel,
                         'type_is',
                         UserLabels::getTypeList(), [
@@ -55,7 +54,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'sex',
                 'format' => 'sex',
-                'filter' => Html5::activeDropDownList(
+                'filter' => Html::activeDropDownList(
                         $searchModel,
                         'sex',
                         UserLabels::getSexList(), [
@@ -67,7 +66,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'status_id',
                 'format' => 'status',
-                'filter' => Html5::activeDropDownList(
+                'filter' => Html::activeDropDownList(
                         $searchModel,
                         'status_id',
                         UserLabels::getStatusList(), [

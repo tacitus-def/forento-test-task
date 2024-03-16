@@ -2,7 +2,6 @@
 
 use common\models\Client;
 use yii\helpers\Html;
-use yii\bootstrap5\Html as Html5;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
 use yii\grid\GridView;
@@ -37,7 +36,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'account_type',
                 'format' => 'accountType',
-                'filter' => Html5::activeDropDownList(
+                'filter' => Html::activeDropDownList(
                         $searchModel,
                         'account_type',
                         ClientLabels::getAccountTypeList(), [
@@ -49,7 +48,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'status',
                 'format' => 'status',
-                'filter' => Html5::activeDropDownList(
+                'filter' => Html::activeDropDownList(
                         $searchModel,
                         'status',
                         ClientLabels::getStatusList(), [
