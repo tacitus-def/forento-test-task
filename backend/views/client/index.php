@@ -2,9 +2,11 @@
 
 use common\models\Client;
 use yii\helpers\Html;
+use yii\bootstrap5\Html as Html5;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
 use yii\grid\GridView;
+use backend\components\ClientMessages;
 
 /** @var yii\web\View $this */
 /** @var backend\models\ClientSearch $searchModel */
@@ -32,9 +34,29 @@ $this->params['breadcrumbs'][] = $this->title;
 
             'name',
             'description:ntext',
-            'account_type:accountType',
+            [
+                'attribute' => 'account_type',
+                'format' => 'accountType',
+                'filter' => Html5::activeDropDownList(
+                        $searchModel,
+                        'account_type',
+                        ClientMessages::getAccountTypeList(), [
+                            'class' => 'form-control',
+                            'prompt' => '— Select —',
+                        ]),
+            ],
             'balance',
-            'status:status',
+            [
+                'attribute' => 'status',
+                'format' => 'status',
+                'filter' => Html5::activeDropDownList(
+                        $searchModel,
+                        'status',
+                        ClientMessages::getStatusList(), [
+                            'class' => 'form-control',
+                            'prompt' => '— Select —',
+                        ]),
+            ],
             [
                 'class' => ActionColumn::className(),
                 'urlCreator' => function ($action, Client $model, $key, $index, $column) {
