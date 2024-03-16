@@ -5,6 +5,8 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
 use yii\grid\GridView;
+use yii\bootstrap5\Html as Html5;
+use backend\components\UserMessages;
 
 /** @var yii\web\View $this */
 /** @var backend\models\PersonSearch $searchModel */
@@ -39,10 +41,40 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
 
             'name',
-            'type_is:type',
-            'sex:sex',
+            [
+                'attribute' => 'type_is',
+                'format' => 'type',
+                'filter' => Html5::activeDropDownList(
+                        $searchModel,
+                        'type_is',
+                        UserMessages::getTypeList(), [
+                            'class' => 'form-control',
+                            'prompt' => '— Select —',
+                        ]),
+            ],
+            [
+                'attribute' => 'sex',
+                'format' => 'sex',
+                'filter' => Html5::activeDropDownList(
+                        $searchModel,
+                        'sex',
+                        UserMessages::getSexList(), [
+                            'class' => 'form-control',
+                            'prompt' => '— Select —',
+                        ]),
+            ],
             'email:email',
-            'status_id:status',
+            [
+                'attribute' => 'status_id',
+                'format' => 'status',
+                'filter' => Html5::activeDropDownList(
+                        $searchModel,
+                        'status_id',
+                        UserMessages::getStatusList(), [
+                            'class' => 'form-control',
+                            'prompt' => '— Select —',
+                        ]),
+            ],
             [
                 'class' => ActionColumn::className(),
                 'urlCreator' => function ($action, User $model, $key, $index, $column) {
