@@ -33,11 +33,13 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?= DetailView::widget([
         'model' => $model,
+        'formatter' => ['class' => \backend\components\FormatterUser::class],
         'attributes' => [
+                    'type_is:type',
                     'name',
-                    'sex',
+                    'sex:sex',
                     'email:email',
-                    'status_id',
+                    'status_id:status',
                 ],
     ]) ?>
 

@@ -34,14 +34,15 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
+        'formatter' => ['class' => \backend\components\FormatterUser::class],
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
             'name',
-            'type_is',
-            'sex',
+            'type_is:type',
+            'sex:sex',
             'email:email',
-            'status_id',
+            'status_id:status',
             [
                 'class' => ActionColumn::className(),
                 'urlCreator' => function ($action, User $model, $key, $index, $column) {

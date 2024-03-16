@@ -31,12 +31,13 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?= DetailView::widget([
         'model' => $model,
+        'formatter' => ['class' => \backend\components\FormatterClient::class],
         'attributes' => [
             'name',
             'description:ntext',
-            'account_type',
+            'account_type:accountType',
             'balance',
-            'status',
+            'status:status',
         ],
     ]) ?>
 
@@ -56,7 +57,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $userProvider,
         'columns' => [
             'name',
-            'email',
+            'email:email',
             [
                 'class' => ActionColumn::class,
                 'template' => '{delete}',
