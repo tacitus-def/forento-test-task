@@ -11,14 +11,14 @@ use yii\i18n\Formatter;
  */
 class UserFormatter extends Formatter {
     public function asStatus($value) {
-        return UserMessages::getStatusList()[$value] ?? null;
+        return UserLabels::getStatusList()[$value] ?? null;
     }
 
     public function asSex($value) {
-        return UserMessages::getSexList()[$value] ?? null;
+        return UserLabels::getSexList()[$value] ?? null;
     }
 
     public function asType($value) {
-        return UserMessages::getTypeList()[$value] ?? null;
+        return UserLabels::getTypeList()[$value] ?? null;
     }
 }

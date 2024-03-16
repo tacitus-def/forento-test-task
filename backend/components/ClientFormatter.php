@@ -11,10 +11,10 @@ use yii\i18n\Formatter;
  */
 class ClientFormatter extends Formatter {
     public function asAccountType($value) {
-        return ClientMessages::getAccountTypeList()[$value] ?? null;
+        return ClientLabels::getAccountTypeList()[$value] ?? null;
     }
 
     public function asStatus($value) {
-        return ClientMessages::getStatusList()[$value] ?? null;
+        return ClientLabels::getStatusList()[$value] ?? null;
     }
 }

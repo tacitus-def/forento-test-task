@@ -9,7 +9,7 @@ use common\models\Client;
  *
  * @author demiurg
  */
-class ClientMessages {
+class ClientLabels {
     public static function getAccountTypeList()
     {
         return [

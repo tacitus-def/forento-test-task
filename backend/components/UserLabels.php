@@ -10,7 +10,7 @@ use common\models\User;
  *
  * @author demiurg
  */
-class UserMessages {
+class UserLabels {
     public static function getSexList() {
         return [
             Person::SEX_FEMALE => 'Female',

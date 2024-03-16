@@ -6,7 +6,7 @@ use yii\bootstrap5\Html as Html5;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
 use yii\grid\GridView;
-use backend\components\ClientMessages;
+use backend\components\ClientLabels;
 
 /** @var yii\web\View $this */
 /** @var backend\models\ClientSearch $searchModel */
@@ -40,7 +40,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'filter' => Html5::activeDropDownList(
                         $searchModel,
                         'account_type',
-                        ClientMessages::getAccountTypeList(), [
+                        ClientLabels::getAccountTypeList(), [
                             'class' => 'form-control',
                             'prompt' => '— Select —',
                         ]),
@@ -52,7 +52,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'filter' => Html5::activeDropDownList(
                         $searchModel,
                         'status',
-                        ClientMessages::getStatusList(), [
+                        ClientLabels::getStatusList(), [
                             'class' => 'form-control',
                             'prompt' => '— Select —',
                         ]),

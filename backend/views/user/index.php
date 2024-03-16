@@ -6,7 +6,7 @@ use yii\helpers\Url;
 use yii\grid\ActionColumn;
 use yii\grid\GridView;
 use yii\bootstrap5\Html as Html5;
-use backend\components\UserMessages;
+use backend\components\UserLabels;
 
 /** @var yii\web\View $this */
 /** @var backend\models\PersonSearch $searchModel */
@@ -47,7 +47,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'filter' => Html5::activeDropDownList(
                         $searchModel,
                         'type_is',
-                        UserMessages::getTypeList(), [
+                        UserLabels::getTypeList(), [
                             'class' => 'form-control',
                             'prompt' => '— Select —',
                         ]),
@@ -58,7 +58,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'filter' => Html5::activeDropDownList(
                         $searchModel,
                         'sex',
-                        UserMessages::getSexList(), [
+                        UserLabels::getSexList(), [
                             'class' => 'form-control',
                             'prompt' => '— Select —',
                         ]),
@@ -70,7 +70,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'filter' => Html5::activeDropDownList(
                         $searchModel,
                         'status_id',
-                        UserMessages::getStatusList(), [
+                        UserLabels::getStatusList(), [
                             'class' => 'form-control',
                             'prompt' => '— Select —',
                         ]),
