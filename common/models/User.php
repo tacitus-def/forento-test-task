@@ -30,6 +30,8 @@ class User extends ActiveRecord implements IdentityInterface
     const DELETED = 1;
     const TYPE_PERSON = 0;
     const TYPE_GROUP = 1;
+    const SEX_FEMALE = 0;
+    const SEX_MALE = 1;
 
     public function getClients() {
         return $this->hasMany(Client::class, ['id' => 'client_id'])
@@ -109,7 +111,6 @@ class User extends ActiveRecord implements IdentityInterface
             'password_reset_token' => $token,
             'status_id' => self::STATUS_ACTIVE,
             'deleted' => self::NOT_DELETED,
-            'type_is' => self::TYPE_PERSON,
         ]);
     }
 
@@ -124,7 +125,6 @@ class User extends ActiveRecord implements IdentityInterface
             'verification_token' => $token,
             'status_id' => self::STATUS_INACTIVE,
             'deleted' => self::NOT_DELETED,
-            'type_is' => self::TYPE_PERSON,
         ]);
     }
 

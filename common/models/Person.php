@@ -25,9 +25,6 @@ use yii\base\NotSupportedException;
  * @property Group[] $groups
  */
 class Person extends User {
-    const SEX_FEMALE = 0;
-    const SEX_MALE = 1;
-
     /**
      * {@inheritdoc}
      */

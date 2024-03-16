@@ -2,7 +2,6 @@
 
 namespace backend\components;
 
-use common\models\Person;
 use common\models\User;
 
 /**
@@ -13,8 +12,8 @@ use common\models\User;
 class UserLabels {
     public static function getSexList() {
         return [
-            Person::SEX_FEMALE => 'Female',
-            Person::SEX_MALE => 'Male',
+            User::SEX_FEMALE => 'Female',
+            User::SEX_MALE => 'Male',
         ];
     }
 
