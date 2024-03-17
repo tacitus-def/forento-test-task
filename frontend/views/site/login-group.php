@@ -18,10 +18,12 @@ $this->params['breadcrumbs'][] = $this->title;
             <?= Html::beginForm(['login-group']); ?>
 
             <p><?= Html::a('Skip selection group', Url::to(['site/index'])) ?></p>
-            <?= Html::dropDownList('group', '', $groups, ['prompt' => '— Select Group —']) ?>
-                <div class="form-group">
-                    <?= Html::submitButton('Enter', ['class' => 'btn btn-primary', 'name' => 'login-button']) ?>
-                </div>
+            <div class="form-group">
+                <?= Html::dropDownList('group', '', $groups, ['prompt' => '— Select Group —', 'class' => 'form-control']) ?>
+            </div>
+            <div class="form-group">
+                <?= Html::submitButton('Enter', ['class' => 'btn btn-primary', 'name' => 'login-button']) ?>
+            </div>
 
             <?= Html::endForm(); ?>
         </div>
