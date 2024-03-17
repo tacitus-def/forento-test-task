@@ -94,6 +94,13 @@ class SiteController extends Controller
         return $this->render('index');
     }
 
+    protected function _userGroups($user_id) {
+        return Group::find()
+                ->innerJoin(['pivot' => '{{%group_person}}'], 'pivot.group_id=user.id')
+                ->where(['pivot.person_id' => $user_id])
+                ->all();
+    }
+
     /**
      * Logs in a user.
      *
@@ -112,7 +119,7 @@ class SiteController extends Controller
             if ($user->type_is == User::TYPE_GROUP) {
                 return $this->goBack();
             }
-            $groups = ArrayHelper::map($user->groups, 'id', 'name');
+            $groups = ArrayHelper::map($this->_userGroups($user->id), 'id', 'name');
             if (count($groups) > 0) {
                 return $this->render('login-group', [
                     'model' => $user,
@@ -134,7 +141,7 @@ class SiteController extends Controller
     public function actionLoginGroup()
     {
         $model = \Yii::$app->user->identity;
-        $groups = ArrayHelper::getColumn($model->groups, 'id');
+        $groups = ArrayHelper::getColumn($this->_userGroups($model->id), 'id');
         $group_id = Yii::$app->request->post('group');
         $validation = DynamicModel::validateData(['group' => $group_id], [
             ['group', 'required'],
